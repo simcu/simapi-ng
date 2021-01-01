@@ -43,24 +43,23 @@ export class AppComponent {
 
   private processApiCallback(): void {
     // 此处并非http的状态码处理，而是业务返回的Code
-    this.api.businessCallback = {
-      // 配置特定业务状态码的处理方式
-      401(data: any): void {
-        localStorage.removeItem('token');
-      },
-      // 配置除了特定业务状态码的处理方式
-      common(data: any): void {
-      }
-    }
+    // 配置特定业务状态码的处理方式
+    this.api.businessCallback[401] = data => {
+      this.api.logout();
+      this.router.navigateByUrl('/auth/login');
+    };
+    // 配置除了特定业务状态码的处理方式
+    this.api.businessCallback.common = data => {
+      this.api.logout();
+      this.router.navigateByUrl('/auth/login');
+    };
 
     // HTTP请求处理
-    this.api.responseCallback = {
-      success(response: any): any {
-        return response;
-      },
-      error(response: any): void {
-      }
-    };
+    this.api.responseCallback.success = response => {
+      return response;
+    }
+    this.api.responseCallback.error = response => {
+    }
   }
 }
 ```
@@ -68,9 +67,9 @@ export class AppComponent {
 请求api接口
 
 ```ts
-this.$simapi.query("uri不带域名", {}).then(resp => {
+this.api.query("uri不带域名", {}).subscribe(data => {
   //resp 为 axios 的 resp.data 
-}).catch(error => {
+}, error => {
   //error 为业务返回的错误信息，不是axios的错误信息
 })
 ```
@@ -86,3 +85,4 @@ ApiService.debug(string)  //本方法将自动在debug模式打印string信息�
 ApiService.isDebug()      //是否为debug模式
 ApiService.getServerUrl()  //获取服务器Url
 ```
+
