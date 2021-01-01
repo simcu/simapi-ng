@@ -1,27 +1,88 @@
-# Angular
+## 配合SimApi的Angular 请求类
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
+### 注意只支持post方法
 
-## Development server
+安装方法：
+> yarn add @simcu/simapi-ng
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+调用方法:
+在app.module.ts中引入
 
-## Code scaffolding
+```ts
+import {SimApiService} from '@simcu/simapi-ng';
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+并在NgModule的provider中加入 SimApiService
 
-## Build
+配置相关：
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+系统会从window中读取两个配置项，请在index.html 中饮用一个js文件，或者直接在内写入
 
-## Running unit tests
+```js
+window.server = "http://127.0.0.1:5000"; //接口服务地址
+window.debug = true; //是否为调试模式（影响日志输出）
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+系统其他可配置选项，推荐在 app.component.ts 中的构造函数进行配置
 
-## Running end-to-end tests
+```ts
+import {Component} from '@angular/core';
+import {SimApiService} from '@simcu/simapi-ng';
+import {Router} from '@angular/router';
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+@Component({
+  selector: 'app-root',
+  template: '<router-outlet></router-outlet>'
+})
+export class AppComponent {
+  title = 'app';
 
-## Further help
+  constructor(private api: SimApiService, private router: Router) {
+    this.processApiCallback();
+  }
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+  private processApiCallback(): void {
+    // 此处并非http的状态码处理，而是业务返回的Code
+    this.api.businessCallback = {
+      // 配置特定业务状态码的处理方式
+      401(data: any): void {
+        localStorage.removeItem('token');
+      },
+      // 配置除了特定业务状态码的处理方式
+      common(data: any): void {
+      }
+    }
+
+    // HTTP请求处理
+    this.api.responseCallback = {
+      success(response: any): any {
+        return response;
+      },
+      error(response: any): void {
+      }
+    };
+  }
+}
+```
+
+请求api接口
+
+```ts
+this.$simapi.query("uri不带域名", {}).then(resp => {
+  //resp 为 axios 的 resp.data 
+}).catch(error => {
+  //error 为业务返回的错误信息，不是axios的错误信息
+})
+```
+
+可以用方法：
+
+```js
+ApiService.login(token)  //本方法将token存入localstorage，并在后续query中自动附加
+ApiService.logout()      //删除token
+ApiService.getToken()    //获取登陆标识
+ApiService.checkLogin(url = "/auth/check") //检测登陆状态
+ApiService.debug(string)  //本方法将自动在debug模式打印string信息，非debug模式不会打印
+ApiService.isDebug()      //是否为debug模式
+ApiService.getServerUrl()  //获取服务器Url
+```

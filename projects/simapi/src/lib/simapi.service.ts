@@ -26,10 +26,10 @@ export class SimApiService {
 
   // 业务错误代码预处理（处理完后依旧会传给后面）
   public businessCallback: Callback = {
-    401: (data: any) => {
+    401(data: any): void {
       localStorage.removeItem('token');
     },
-    common: (data: any) => {
+    common(data: any): void {
     }
   };
 
