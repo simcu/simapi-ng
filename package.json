@@ -1,14 +1,22 @@
 {
-  "name": "angular",
-  "version": "0.0.0",
+  "name": "@simcu/simapi-ng",
+  "description": "A common api library for Angular (https://github.com/simapi)",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod",
+    "publish" "npm publish ./dist/simapi --access public"
     "test": "ng test",
     "lint": "ng lint"
   },
-  "private": true,
+  "keywords": [
+    "simcu",
+    "simapi",
+    "httpapi"
+  ],
+  "author": "xRain",
+  "license": "ISC",
+  "private": false,
   "dependencies": {
     "@angular/animations": "~11.0.5",
     "@angular/common": "~11.0.5",
@@ -23,6 +31,7 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1100.5",
     "@angular/cli": "~11.0.5",
     "@angular/compiler-cli": "~11.0.5",
     "@types/jasmine": "~3.6.0",
@@ -35,6 +44,7 @@
     "karma-coverage": "~2.0.3",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "ng-packagr": "^11.0.0",
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",

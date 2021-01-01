@@ -3,5 +3,46 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "simapi": {
+      "projectType": "library",
+      "root": "projects/simapi",
+      "sourceRoot": "projects/simapi/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/simapi/tsconfig.lib.json",
+            "project": "projects/simapi/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/simapi/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/simapi/src/test.ts",
+            "tsConfig": "projects/simapi/tsconfig.spec.json",
+            "karmaConfig": "projects/simapi/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/simapi/tsconfig.lib.json",
+              "projects/simapi/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "simapi"
 }
