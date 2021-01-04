@@ -26,10 +26,10 @@ export class SimApiService {
 
   // 业务错误代码预处理（处理完后依旧会传给后面）
   public businessCallback: Callback = {
-    401(data: any): void {
+    401: (data: any): void => {
       localStorage.removeItem('token');
     },
-    common(data: any): void {
+    common: (data: any): void => {
     }
   };
 
@@ -112,8 +112,8 @@ export class SimApiService {
         const respData = this.responseCallback.success(data);
         if (this.businessCallback.hasOwnProperty(respData.code)) {
           this.businessCallback[respData.code](respData);
-        } else if (this.businessCallback.hasOwnProperty(0) && respData.code !== 200) {
-          this.businessCallback[0](respData);
+        } else if (this.businessCallback.common && respData.code !== 200) {
+          this.businessCallback.common(respData);
         }
         if (respData.code === 200) {
           obs.next(respData);
