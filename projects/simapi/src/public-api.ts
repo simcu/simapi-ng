@@ -3,4 +3,3 @@
  */
 
 export * from './lib/simapi.service';
-export * from './lib/simapi.module';

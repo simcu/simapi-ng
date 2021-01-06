@@ -1,7 +1,7 @@
 {
   "name": "@simcu/simapi-ng",
   "description": "A common api library for Angular (https://github.com/simapi)",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "peerDependencies": {
     "@angular/common": "^11.0.5",
     "@angular/core": "^11.0.5"

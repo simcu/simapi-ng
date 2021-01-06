@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Router} from '@angular/router';
 
 type Callback = {
   [key in number | string]: (data: any) => void | any;
@@ -11,7 +10,7 @@ type Callback = {
   providedIn: 'root'
 })
 export class SimApiService {
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient) {
     // @ts-ignore
     this.serverUrl = window.server;
     // @ts-ignore
