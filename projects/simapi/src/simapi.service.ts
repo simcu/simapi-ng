@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {SimApiAuthService} from './simapi-auth.service';
+import {SimApiOidcService} from './simapi-oidc.service';
 
 type Callback = {
   [key in number | string]: (data: any) => void | any;
@@ -10,14 +12,14 @@ type Callback = {
   providedIn: 'root'
 })
 export class SimApiService {
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private oidc: SimApiOidcService) {
     // @ts-ignore
-    this.serverUrl = window.server;
+    this.endpoints = window.simapi.endpoints;
     // @ts-ignore
-    this.debugMode = window.debug;
+    this.debugMode = window.simapi.debug;
   }
 
-  private readonly serverUrl: string;
+  private readonly endpoints: { [name: string]: string };
   private readonly debugMode = false;
   private headers: {
     [name: string]: string;
@@ -41,20 +43,15 @@ export class SimApiService {
     }
   };
 
-  // 获取当前服务器地址
-  public getServerUrl(): string | null {
-    return this.serverUrl;
-  }
-
   // 判断是否DEBUG模式
-  public isDebug(): boolean {
+  get isDebug(): boolean {
     return this.debugMode;
   }
 
   // 输出DEBUG信息（非DEBUG模式无输出）
-  public debug(data: any): void {
-    if (this.isDebug()) {
-      window.console.log('[DEBUG]', data);
+  debug(title: string, data: any): void {
+    if (this.isDebug) {
+      window.console.log('[DEBUG]', title, data);
     }
   }
 
@@ -65,47 +62,29 @@ export class SimApiService {
     return (((1 + Math.random()) * 0x10000 * Date.parse(new Date())) | 0).toString(16).substring(1);
   }
 
-  // 设置登陆Token
-  public login(token: string): void {
-    localStorage.setItem('token', token);
-  }
-
-  // 登出
-  public logout(url = '/auth/logout'): Observable<any> {
-    localStorage.removeItem('token');
-    return this.query(url);
-  }
-
-  // 检测登陆状态（需要借助401返回判断）
-  public checkLogin(url = '/auth/check'): void {
-    this.query(url).subscribe();
-  }
-
-  // 获取用户登陆标识
-  public getToken(): string {
-    return localStorage.getItem('token') || '';
-  }
-
   // 发起数据请求
-  public query(uri: string, params = {}): Observable<any> {
+  public query(uri: string, params = {}, endpointKey = 'default'): Observable<any> {
     const queryId = this.genS4();
     this.headers = {'Content-Type': 'application/json'};
-    if ('' !== this.getToken()) {
-      this.headers.Token = this.getToken();
+    if ('' !== localStorage.getItem('token')) {
+      this.headers.Token = localStorage.getItem('token') ?? '';
     }
-    if (this.isDebug()) {
+    if (this.oidc.userAvailable) {
+      this.headers.Authorization = `${this.oidc.user?.token_type} ${this.oidc.user?.access_token}`;
+    }
+    if (this.isDebug) {
       this.headers['Query-Id'] = queryId;
-      console.log('[REQUEST*]', queryId, '->', uri, 'AUTH:', this.getToken(), params);
+      console.log('[REQUEST*]', queryId, '->', uri, 'AUTH:', localStorage.getItem('token') || this.oidc.userAvailable, params);
     }
     const resp = this.http.post(
-      this.serverUrl + uri,
+      this.endpoints[endpointKey] + uri,
       params,
       {
         headers: new HttpHeaders(this.headers)
       });
     return new Observable<any>(obs => {
       resp.subscribe(data => {
-        if (this.isDebug()) {
+        if (this.isDebug) {
           console.log('[RESPONSE]', queryId, '->', data);
         }
         const respData = this.responseCallback.success(data);
@@ -120,7 +99,7 @@ export class SimApiService {
           obs.error(respData);
         }
       }, err => {
-        if (this.isDebug()) {
+        if (this.isDebug) {
           console.log('[RESPONSE]', queryId, '->', err);
         }
         this.responseCallback.error(err);
