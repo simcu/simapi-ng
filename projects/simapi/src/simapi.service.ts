@@ -56,7 +56,7 @@ export class SimApiService {
   }
 
   // 生成一个随机短字符串
-  private genS4(): string {
+  genS4(): string {
     // @ts-ignore
     // tslint:disable-next-line:no-bitwise
     return (((1 + Math.random()) * 0x10000 * Date.parse(new Date())) | 0).toString(16).substring(1);
