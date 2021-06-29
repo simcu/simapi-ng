@@ -3,7 +3,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {SimApiService} from './simapi.service';
 import {SimApiOidcService} from './simapi-oidc.service';
 import {SimApiAuthService} from './simapi-auth.service';
-
+import {SimApiConfigService} from './simapi-config.service';
 
 @NgModule({
   declarations: [],
@@ -13,7 +13,8 @@ import {SimApiAuthService} from './simapi-auth.service';
   providers: [
     SimApiService,
     SimApiOidcService,
-    SimApiAuthService
+    SimApiAuthService,
+    SimApiConfigService
   ],
   exports: []
 })

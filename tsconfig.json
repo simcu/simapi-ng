@@ -1,12 +1,9 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
@@ -14,21 +11,19 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
+    "paths": {
+      "sim-api": [
+        "dist/sim-api/sim-api",
+        "dist/sim-api"
+      ]
+    },
     "module": "es2020",
     "lib": [
       "es2018",
       "dom"
-    ],
-    "paths": {
-      "simapi": [
-        "dist/simapi/simapi",
-        "dist/simapi"
-      ]
-    }
+    ]
   },
   "angularCompilerOptions": {
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "enableI18nLegacyMessageIdFormat": false
   }
 }

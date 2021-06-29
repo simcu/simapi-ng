@@ -1,85 +1,27 @@
-## 配合SimApi的Angular 请求类
+# SimapiNg
 
-### 注意只支持post方法
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.14.
 
-安装方法：
-> yarn add @simcu/simapi-ng
+## Development server
 
-调用方法:
-在app.module.ts中引入
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-```ts
-import {SimApiService} from '@simcu/simapi-ng';
-```
+## Code scaffolding
 
-并在NgModule的provider中加入 SimApiService
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-配置相关：
+## Build
 
-系统会从window中读取两个配置项，请在index.html 中饮用一个js文件，或者直接在内写入
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-```js
-window.simapi = {
-  debug: true,
-  oidc: {
-    server: "",
-    client_id: "",
-    scope: ""
-  },
-  endpoints: {
-    key: ""
-  }
-}; //接口服务地址
-```
+## Running unit tests
 
-系统其他可配置选项，推荐在 app.component.ts 中的构造函数进行配置
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-```ts
-import {Component} from '@angular/core';
-import {SimApiService} from '@simcu/simapi-ng';
-import {Router} from '@angular/router';
+## Running end-to-end tests
 
-@Component({
-  selector: 'app-root',
-  template: '<router-outlet></router-outlet>'
-})
-export class AppComponent {
-  title = 'app';
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-  constructor(private api: SimApiService, private router: Router) {
-    this.processApiCallback();
-  }
+## Further help
 
-  private processApiCallback(): void {
-    // 此处并非http的状态码处理，而是业务返回的Code
-    // 配置特定业务状态码的处理方式
-    this.api.businessCallback[401] = data => {
-      this.api.logout();
-      this.router.navigateByUrl('/auth/login');
-    };
-    // 配置除了特定业务状态码的处理方式
-    this.api.businessCallback.common = data => {
-      this.api.logout();
-      this.router.navigateByUrl('/auth/login');
-    };
-
-    // HTTP请求处理
-    this.api.responseCallback.success = response => {
-      return response;
-    }
-    this.api.responseCallback.error = response => {
-    }
-  }
-}
-```
-
-请求api接口
-
-```ts
-this.api.query("uri不带域名", {},"endpointKey 选择接口域名").subscribe(data => {
-  //resp 为 axios 的 resp.data 
-}, error => {
-  //error 为业务返回的错误信息，不是axios的错误信息
-})
-```
-
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.

@@ -1,47 +1,36 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {SimApiAuthService} from './simapi-auth.service';
 import {SimApiOidcService} from './simapi-oidc.service';
+import {SimApiConfigService} from './simapi-config.service';
 
 type Callback = {
   [key in number | string]: (data: any) => void | any;
 };
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class SimApiService {
-  constructor(private http: HttpClient, private oidc: SimApiOidcService) {
-    // @ts-ignore
-    this.endpoints = window.simapi.endpoints;
-    // @ts-ignore
-    this.debugMode = window.simapi.debug;
+  constructor(private http: HttpClient, private oidc: SimApiOidcService, private config: SimApiConfigService) {
+    this.endpoints = config.api.endpoints;
+    this.debugMode = config.debug;
+    this.businessCallback = config.api.businessCallback;
+    this.responseCallback = config.api.responseCallback;
   }
 
   private readonly endpoints: { [name: string]: string };
-  private readonly debugMode = false;
+  private readonly debugMode: boolean = false;
   private headers: {
     [name: string]: string;
   } | undefined;
 
   // 业务错误代码预处理（处理完后依旧会传给后面）
-  public businessCallback: Callback = {
-    401: (data: any): void => {
-      localStorage.removeItem('token');
-    },
-    common: (data: any): void => {
-    }
-  };
+  private readonly businessCallback: Callback;
 
   // 网络请求处理
-  public responseCallback: Callback = {
-    success(response: any): any {
-      return response;
-    },
-    error(response: any): void {
-    }
-  };
+  private responseCallback: Callback;
 
   // 判断是否DEBUG模式
   get isDebug(): boolean {
@@ -63,18 +52,19 @@ export class SimApiService {
   }
 
   // 发起数据请求
-  public query(uri: string, params = {}, endpointKey = 'default'): Observable<any> {
+  public query(uri: string, params = {}, endpointKey = this.config.api.defaultEndpoint): Observable<any> {
     const queryId = this.genS4();
     this.headers = {'Content-Type': 'application/json'};
-    if ('' !== localStorage.getItem('token')) {
-      this.headers.Token = localStorage.getItem('token') ?? '';
+    if (localStorage.getItem(this.config.auth.token_name)) {
+      this.headers.Token = localStorage.getItem(this.config.auth.token_name);
     }
     if (this.oidc.userAvailable) {
       this.headers.Authorization = `${this.oidc.user?.token_type} ${this.oidc.user?.access_token}`;
     }
     if (this.isDebug) {
       this.headers['Query-Id'] = queryId;
-      console.log('[REQUEST*]', queryId, '->', uri, 'AUTH:', localStorage.getItem('token') || this.oidc.userAvailable, params);
+      console.log('[REQUEST*]', queryId, '->', uri, 'AUTH:',
+        localStorage.getItem(this.config.auth.token_name) || this.oidc.userAvailable, params);
     }
     const resp = this.http.post(
       this.endpoints[endpointKey] + uri,
