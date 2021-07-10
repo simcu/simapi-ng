@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {Observable, of, ReplaySubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -40,4 +41,10 @@ export class SimApiConfigService {
       }
     }
   };
+
+  readonly realTime$ = new ReplaySubject<SimApiConfigService>(1);
+
+  constructor() {
+    this.realTime$.next(this);
+  }
 }

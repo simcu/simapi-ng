@@ -9,12 +9,12 @@ import {SimApiConfigService} from './simapi-config.service';
   providedIn: 'root'
 })
 export class SimApiOidcService {
-  private readonly usePopup: boolean = false;
-  private readonly oidcSetting = {
-    authority: this.config.oidc.server,
-    client_id: this.config.oidc.client_id,
+  private usePopup: boolean;
+  private oidcSetting = {
+    authority: '',
+    client_id: '',
     redirect_uri: '',
-    scope: this.config.oidc.scope,
+    scope: '',
     response_type: 'token',
     automaticSilentRenew: false,
     popupWindowFeatures: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100'
@@ -25,37 +25,43 @@ export class SimApiOidcService {
   userLoaded$ = new ReplaySubject<boolean>(1);
 
   constructor(private route: ActivatedRoute, private ls: LocationStrategy, private config: SimApiConfigService) {
-    if (ls instanceof HashLocationStrategy) {
-      this.oidcSetting.redirect_uri = `${document.location.origin}/#${config.oidc.redirect_uri}?`;
-    } else {
-      this.oidcSetting.redirect_uri = `${document.location.origin}${config.oidc.redirect_uri}`;
-    }
-    this.usePopup = this.config.oidc.use_popup;
-    this.oidcSetting.popupWindowFeatures = this.config.oidc.popup_setting;
-    if (this.config.oidc.full !== null) {
-      this.oidcSetting = this.config.oidc.full;
-    }
-    this.manager = new UserManager(this.oidcSetting);
-    this.manager.clearStaleState();
-    this.manager.getUser().then(user => {
-      if (user) {
-        this.currentUser = user;
-        this.userLoaded$.next(true);
+    config.realTime$.subscribe(x => {
+      if (this.config.oidc.full !== null) {
+        this.oidcSetting = x.oidc.full;
       } else {
+        if (ls instanceof HashLocationStrategy) {
+          this.oidcSetting.redirect_uri = `${document.location.origin}/#${x.oidc.redirect_uri}?`;
+        } else {
+          this.oidcSetting.redirect_uri = `${document.location.origin}${x.oidc.redirect_uri}`;
+        }
+        this.usePopup = x.oidc.use_popup;
+        this.oidcSetting.popupWindowFeatures = x.oidc.popup_setting;
+        this.oidcSetting.authority = x.oidc.server;
+        this.oidcSetting.client_id = x.oidc.client_id;
+        this.oidcSetting.scope = x.oidc.scope;
+      }
+      this.manager = new UserManager(this.oidcSetting);
+      this.manager.clearStaleState();
+      this.manager.getUser().then(user => {
+        if (user) {
+          this.currentUser = user;
+          this.userLoaded$.next(true);
+        } else {
+          this.currentUser = null;
+          this.userLoaded$.next(false);
+        }
+      }).catch(err => {
         this.currentUser = null;
         this.userLoaded$.next(false);
-      }
-    }).catch(err => {
-      this.currentUser = null;
-      this.userLoaded$.next(false);
-    });
-    this.manager.events.addUserLoaded(user => {
-      this.currentUser = user;
-      this.userLoaded$.next(true);
-    });
-    this.manager.events.addUserUnloaded(() => {
-      this.currentUser = null;
-      this.userLoaded$.next(false);
+      });
+      this.manager.events.addUserLoaded(user => {
+        this.currentUser = user;
+        this.userLoaded$.next(true);
+      });
+      this.manager.events.addUserUnloaded(() => {
+        this.currentUser = null;
+        this.userLoaded$.next(false);
+      });
     });
   }
 

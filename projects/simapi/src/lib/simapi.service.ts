@@ -14,20 +14,22 @@ type Callback = {
 })
 export class SimApiService {
   constructor(private http: HttpClient, private oidc: SimApiOidcService, private config: SimApiConfigService) {
-    this.endpoints = config.api.endpoints;
-    this.debugMode = config.debug;
-    this.businessCallback = config.api.businessCallback;
-    this.responseCallback = config.api.responseCallback;
+    config.realTime$.subscribe(x => {
+      this.endpoints = x.api.endpoints;
+      this.debugMode = x.debug;
+      this.businessCallback = x.api.businessCallback;
+      this.responseCallback = x.api.responseCallback;
+    });
   }
 
-  private readonly endpoints: { [name: string]: string };
-  private readonly debugMode: boolean = false;
+  private endpoints: { [name: string]: string };
+  private debugMode: boolean;
   private headers: {
     [name: string]: string;
   } | undefined;
 
   // 业务错误代码预处理（处理完后依旧会传给后面）
-  private readonly businessCallback: Callback;
+  private businessCallback: Callback;
 
   // 网络请求处理
   private responseCallback: Callback;

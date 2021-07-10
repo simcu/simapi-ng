@@ -14,9 +14,11 @@ export class SimApiAuthService {
   public login(request: {}): Observable<any> {
     return new Observable<any>(obs => {
       this.simapi.query(this.config.auth.login_url, request).subscribe(x => {
-        this.setToken(x.data);
+        if (x.data) {
+          this.setToken(x.data);
+        }
         obs.next(x);
-      }, obs.error);
+      }, e => obs.error(e));
     });
   }
 
@@ -30,7 +32,7 @@ export class SimApiAuthService {
     return new Observable<any>(obs => {
       localStorage.removeItem(this.config.auth.token_name);
       if (url !== null) {
-        this.simapi.query(url).subscribe(obs.next, obs.error);
+        this.simapi.query(url).subscribe(r => obs.next(r), e => obs.error(e));
       } else {
         obs.next(true);
       }
