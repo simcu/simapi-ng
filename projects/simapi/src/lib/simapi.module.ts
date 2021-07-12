@@ -8,10 +8,10 @@ import {LoginComponent} from './components/login/login.component';
 import {SignInComponent} from './components/sign-in.component';
 import {RouterModule, Routes} from '@angular/router';
 
-const routes: Routes = [
+export const router = RouterModule.forChild([
   {path: '/oidc/login', component: LoginComponent},
   {path: '/oidc/sign-in', component: SignInComponent}
-];
+]);
 
 @NgModule({
   declarations: [
@@ -20,7 +20,7 @@ const routes: Routes = [
   ],
   imports: [
     HttpClientModule,
-    RouterModule.forChild(routes)
+    router
   ],
   providers: [
     SimApiService,
