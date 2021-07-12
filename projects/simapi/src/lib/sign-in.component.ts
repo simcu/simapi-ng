@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {SimApiOidcService} from '../simapi-oidc.service';
+import {SimApiOidcService} from './simapi-oidc.service';
 
 @Component({
   selector: 'simapi-sign-in',
