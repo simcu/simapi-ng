@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ReplaySubject} from 'rxjs';
 import {User, UserManager} from 'oidc-client';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {SimApiConfigService} from './simapi-config.service';
 
@@ -19,13 +19,16 @@ export class SimApiOidcService {
     automaticSilentRenew: false,
     popupWindowFeatures: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100'
   };
+  private autoLogin = false;
   public manager: UserManager;
   private currentUser: User | null | undefined = null;
 
   userLoaded$ = new ReplaySubject<boolean>(1);
 
-  constructor(private route: ActivatedRoute, private ls: LocationStrategy, private config: SimApiConfigService) {
+  constructor(private route: ActivatedRoute, private ls: LocationStrategy,
+              private config: SimApiConfigService, private router: Router) {
     config.realTime$.subscribe(x => {
+      this.autoLogin = config.oidc.auto_login;
       if (this.config.oidc.full !== null) {
         this.oidcSetting = x.oidc.full;
       } else {
@@ -66,6 +69,15 @@ export class SimApiOidcService {
   }
 
   signIn(): void {
+    if (this.autoLogin) {
+      this.signInHandler();
+    } else {
+      this.router.navigateByUrl('/oidc/login');
+    }
+  }
+
+
+  signInHandler(): void {
     if (this.usePopup) {
       this.manager.signinPopup();
     } else {

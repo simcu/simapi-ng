@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, of, ReplaySubject} from 'rxjs';
+import {ReplaySubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +7,11 @@ import {Observable, of, ReplaySubject} from 'rxjs';
 export class SimApiConfigService {
   debug = true;
   oidc = {
+    auto_login: false,
     server: '',
     client_id: '',
     scope: '',
-    redirect_uri: '/sign-in',
+    redirect_uri: '/oidc/sign-in',
     use_popup: false,
     popup_setting: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100',
     full: null // 全量配置，使用oidc-client的配置方式，这种方式忽略其他参数

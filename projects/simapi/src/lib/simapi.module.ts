@@ -4,17 +4,29 @@ import {SimApiService} from './simapi.service';
 import {SimApiOidcService} from './simapi-oidc.service';
 import {SimApiAuthService} from './simapi-auth.service';
 import {SimApiConfigService} from './simapi-config.service';
+import {LoginComponent} from './components/login/login.component';
+import {SignInComponent} from './components/sign-in.component';
+import {RouterModule, Routes} from '@angular/router';
+
+const routes: Routes = [
+  {path: '/oidc/login', component: LoginComponent},
+  {path: '/oidc/sign-in', component: SignInComponent}
+];
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    LoginComponent,
+    SignInComponent
+  ],
   imports: [
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forChild(routes)
   ],
   providers: [
     SimApiService,
     SimApiOidcService,
     SimApiAuthService,
-    SimApiConfigService
+    SimApiConfigService,
   ],
   exports: []
 })
