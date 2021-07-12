@@ -19,7 +19,6 @@ export class SimApiOidcService {
     automaticSilentRenew: false,
     popupWindowFeatures: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100'
   };
-  private autoLogin = false;
   public manager: UserManager;
   private currentUser: User | null | undefined = null;
 
@@ -28,7 +27,6 @@ export class SimApiOidcService {
   constructor(private route: ActivatedRoute, private ls: LocationStrategy,
               private config: SimApiConfigService, private router: Router) {
     config.realTime$.subscribe(x => {
-      this.autoLogin = config.oidc.auto_login;
       if (this.config.oidc.full !== null) {
         this.oidcSetting = x.oidc.full;
       } else {
@@ -69,15 +67,6 @@ export class SimApiOidcService {
   }
 
   signIn(): void {
-    if (this.autoLogin) {
-      this.signInHandler();
-    } else {
-      this.router.navigateByUrl('/oidc/login');
-    }
-  }
-
-
-  signInHandler(): void {
     if (this.usePopup) {
       this.manager.signinPopup();
     } else {

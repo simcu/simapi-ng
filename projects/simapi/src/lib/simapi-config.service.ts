@@ -7,7 +7,6 @@ import {ReplaySubject} from 'rxjs';
 export class SimApiConfigService {
   debug = true;
   oidc = {
-    auto_login: false,
     server: '',
     client_id: '',
     scope: '',
