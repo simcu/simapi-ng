@@ -14,7 +14,7 @@ import {RouterModule} from '@angular/router';
   imports: [
     HttpClientModule,
     RouterModule.forChild([
-      {path: '/oidc/sign-in', component: SignInComponent}
+      {path: 'oidc/sign-in', component: SignInComponent}
     ])
   ],
   providers: [
