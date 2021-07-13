@@ -121,18 +121,14 @@ export class SimApiOidcService {
   signOut(): void {
     if (this.config.oidc.sign_out_sync) {
       if (this.usePopup) {
-        this.manager.signoutPopup().then(() => {
-          this.signState$.next(true);
-        });
+        this.manager.signoutPopup();
       } else {
-        this.manager.signoutRedirect().then(() => {
-          this.signState$.next(true);
-        });
+        this.manager.signoutRedirect();
       }
     } else {
       this.manager.removeUser().then(() => {
         this.userLoaded$.next(false);
-        this.signState$.next(true);
+        this.signState$.next(false);
       });
     }
   }
@@ -140,9 +136,15 @@ export class SimApiOidcService {
   signOutCallBack(): void {
     const url = window.location.href.replace('/#/', '').replace('?', '#');
     if (this.usePopup) {
-      this.manager.signoutPopupCallback(url);
+      this.manager.signoutPopupCallback(url).then(() => {
+        this.signState$.next(false);
+      });
+      ;
     } else {
-      this.manager.signoutCallback(url);
+      this.manager.signoutCallback(url).then(() => {
+        this.signState$.next(false);
+      });
+      ;
     }
   }
 
