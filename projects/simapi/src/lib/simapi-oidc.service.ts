@@ -125,7 +125,9 @@ export class SimApiOidcService {
         this.manager.signoutRedirect();
       }
     } else {
-      this.userLoaded$.next(false);
+      this.manager.removeUser().then(() => {
+        this.userLoaded$.next(false);
+      });
     }
   }
 
