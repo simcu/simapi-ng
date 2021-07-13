@@ -15,7 +15,7 @@ export class SimApiOidcService {
     client_id: '',
     redirect_uri: '',
     scope: '',
-    response_type: 'token',
+    response_type: '',
     automaticSilentRenew: false,
     popupWindowFeatures: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100',
     post_logout_redirect_uri: '',
@@ -32,6 +32,7 @@ export class SimApiOidcService {
       if (this.config.oidc.full !== null) {
         this.oidcSetting = x.oidc.full;
       } else {
+        this.oidcSetting.response_type = x.oidc.response_type;
         if (ls instanceof HashLocationStrategy) {
           this.oidcSetting.redirect_uri = `${document.location.origin}/#${x.oidc.sign_in_uri}?`;
           this.oidcSetting.post_logout_redirect_uri = `${document.location.origin}/#${x.oidc.sign_out_uri}`;

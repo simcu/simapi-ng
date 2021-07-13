@@ -10,6 +10,7 @@ export class SimApiConfigService {
     server: '',
     client_id: '',
     scope: '',
+    response_type: 'token id_token',
     sign_in_uri: '/oidc/sign-in',
     sign_out_uri: '/oidc/sign-out',
     sign_out_sync: false,
