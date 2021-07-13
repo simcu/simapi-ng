@@ -71,6 +71,11 @@ export class SimApiOidcService {
         this.userLoaded$.next(false);
       });
     });
+    this.userLoaded$.subscribe(x => {
+      if (!x) {
+        this.manager.removeUser();
+      }
+    });
   }
 
   signIn(): void {
@@ -120,9 +125,7 @@ export class SimApiOidcService {
         this.manager.signoutRedirect();
       }
     } else {
-      this.manager.removeUser().then(() => {
-        this.userLoaded$.next(false);
-      });
+      this.userLoaded$.next(false);
     }
   }
 
