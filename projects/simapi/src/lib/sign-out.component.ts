@@ -2,16 +2,16 @@ import {Component, OnInit} from '@angular/core';
 import {SimApiOidcService} from './simapi-oidc.service';
 
 @Component({
-  selector: 'simapi-sign-in',
+  selector: 'simapi-sign-out',
   template: '',
 })
-export class SignInComponent implements OnInit {
+export class SignOutComponent implements OnInit {
 
   constructor(private oidc: SimApiOidcService) {
   }
 
   ngOnInit(): void {
-    this.oidc.signInCallback();
+    this.oidc.signOutCallBack();
   }
 
 }

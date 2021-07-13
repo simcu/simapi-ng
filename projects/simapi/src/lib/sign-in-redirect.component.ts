@@ -5,13 +5,13 @@ import {SimApiOidcService} from './simapi-oidc.service';
   selector: 'simapi-sign-in',
   template: '',
 })
-export class SignInComponent implements OnInit {
+export class SignInRedirectComponent implements OnInit {
 
   constructor(private oidc: SimApiOidcService) {
   }
 
   ngOnInit(): void {
-    this.oidc.signInCallback();
+    this.oidc.signIn();
   }
 
 }

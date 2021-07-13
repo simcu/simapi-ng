@@ -10,7 +10,9 @@ export class SimApiConfigService {
     server: '',
     client_id: '',
     scope: '',
-    redirect_uri: '/oidc/sign-in',
+    sign_in_uri: '/oidc/sign-in',
+    sign_out_uri: '/oidc/sign-out',
+    sync_sign_out: false,
     use_popup: false,
     popup_setting: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100',
     full: null // 全量配置，使用oidc-client的配置方式，这种方式忽略其他参数

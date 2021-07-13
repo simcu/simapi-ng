@@ -6,15 +6,21 @@ import {SimApiAuthService} from './simapi-auth.service';
 import {SimApiConfigService} from './simapi-config.service';
 import {SignInComponent} from './sign-in.component';
 import {RouterModule} from '@angular/router';
+import {SignOutComponent} from './sign-out.component';
+import {SignInRedirectComponent} from './sign-in-redirect.component';
 
 @NgModule({
   declarations: [
-    SignInComponent
+    SignInComponent,
+    SignOutComponent,
+    SignInRedirectComponent
   ],
   imports: [
     HttpClientModule,
     RouterModule.forChild([
-      {path: 'oidc/sign-in', component: SignInComponent}
+      {path: 'oidc/sign-in', component: SignInComponent},
+      {path: 'oidc/sign-out', component: SignOutComponent},
+      {path: 'oidc/redirect', component: SignInRedirectComponent}
     ])
   ],
   providers: [

@@ -17,7 +17,9 @@ export class SimApiOidcService {
     scope: '',
     response_type: 'token',
     automaticSilentRenew: false,
-    popupWindowFeatures: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100'
+    popupWindowFeatures: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100',
+    post_logout_redirect_uri: '',
+    popup_post_logout_redirect_uri: ''
   };
   public manager: UserManager;
   private currentUser: User | null | undefined = null;
@@ -31,10 +33,13 @@ export class SimApiOidcService {
         this.oidcSetting = x.oidc.full;
       } else {
         if (ls instanceof HashLocationStrategy) {
-          this.oidcSetting.redirect_uri = `${document.location.origin}/#${x.oidc.redirect_uri}?`;
+          this.oidcSetting.redirect_uri = `${document.location.origin}/#${x.oidc.sign_in_uri}?`;
+
         } else {
-          this.oidcSetting.redirect_uri = `${document.location.origin}${x.oidc.redirect_uri}`;
+          this.oidcSetting.redirect_uri = `${document.location.origin}${x.oidc.sign_in_uri}`;
         }
+        this.oidcSetting.post_logout_redirect_uri = x.oidc.sign_out_uri;
+        this.oidcSetting.popup_post_logout_redirect_uri = x.oidc.sign_out_uri;
         this.usePopup = x.oidc.use_popup;
         this.oidcSetting.popupWindowFeatures = x.oidc.popup_setting;
         this.oidcSetting.authority = x.oidc.server;
@@ -106,9 +111,26 @@ export class SimApiOidcService {
   }
 
   signOut(): void {
-    this.manager.removeUser().then(() => {
-      this.userLoaded$.next(false);
-    });
+    if (this.config.oidc.sync_sign_out) {
+      if (this.usePopup) {
+        this.manager.signoutPopup();
+      } else {
+        this.manager.signoutPopup();
+      }
+    } else {
+      this.manager.removeUser().then(() => {
+        this.userLoaded$.next(false);
+      });
+    }
+  }
+
+  signOutCallBack(): void {
+    const url = window.location.href.replace('/#/', '').replace('?', '#');
+    if (this.usePopup) {
+      this.manager.signoutPopupCallback(url);
+    } else {
+      this.manager.signoutCallback(url);
+    }
   }
 
   get userAvailable(): boolean {
