@@ -135,11 +135,14 @@ export class SimApiOidcService {
 
   signOutCallBack(): void {
     if (this.usePopup) {
-      this.manager.signoutPopupCallback(false);
+      this.manager.signoutPopupCallback(false).then(() => {
+        this.signState$.next(false);
+      });
     } else {
-      this.manager.signoutCallback();
+      this.manager.signoutCallback().then(() => {
+        this.signState$.next(false);
+      });
     }
-    this.signState$.next(false);
   }
 
   get userAvailable(): boolean {
