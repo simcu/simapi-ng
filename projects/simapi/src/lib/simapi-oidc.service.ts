@@ -34,12 +34,14 @@ export class SimApiOidcService {
       } else {
         if (ls instanceof HashLocationStrategy) {
           this.oidcSetting.redirect_uri = `${document.location.origin}/#${x.oidc.sign_in_uri}?`;
-
+          this.oidcSetting.post_logout_redirect_uri = `${document.location.origin}/#${x.oidc.sign_out_uri}`;
+          this.oidcSetting.popup_post_logout_redirect_uri = `${document.location.origin}/#${x.oidc.sign_out_uri}`;
         } else {
           this.oidcSetting.redirect_uri = `${document.location.origin}${x.oidc.sign_in_uri}`;
+          this.oidcSetting.post_logout_redirect_uri = `${document.location.origin}${x.oidc.sign_out_uri}`;
+          this.oidcSetting.popup_post_logout_redirect_uri = `${document.location.origin}${x.oidc.sign_out_uri}`;
         }
-        this.oidcSetting.post_logout_redirect_uri = x.oidc.sign_out_uri;
-        this.oidcSetting.popup_post_logout_redirect_uri = x.oidc.sign_out_uri;
+
         this.usePopup = x.oidc.use_popup;
         this.oidcSetting.popupWindowFeatures = x.oidc.popup_setting;
         this.oidcSetting.authority = x.oidc.server;
@@ -111,11 +113,11 @@ export class SimApiOidcService {
   }
 
   signOut(): void {
-    if (this.config.oidc.sync_sign_out) {
+    if (this.config.oidc.sign_out_sync) {
       if (this.usePopup) {
         this.manager.signoutPopup();
       } else {
-        this.manager.signoutPopup();
+        this.manager.signoutRedirect();
       }
     } else {
       this.manager.removeUser().then(() => {
