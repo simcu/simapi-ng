@@ -25,6 +25,7 @@ export class SimApiOidcService {
   private currentUser: User | null | undefined = null;
 
   userLoaded$ = new ReplaySubject<boolean>(1);
+  signState$ = new ReplaySubject<boolean>(1);
 
   constructor(private route: ActivatedRoute, private ls: LocationStrategy,
               private config: SimApiConfigService, private router: Router) {
@@ -105,9 +106,13 @@ export class SimApiOidcService {
       } else {
         const url = window.location.href.replace('/#/', '').replace('?', '#');
         if (this.usePopup) {
-          this.manager.signinPopupCallback(url);
+          this.manager.signinPopupCallback(url).then(() => {
+            this.signState$.next(true);
+          });
         } else {
-          this.manager.signinRedirectCallback(url);
+          this.manager.signinRedirectCallback(url).then(() => {
+            this.signState$.next(true);
+          });
         }
       }
     });
@@ -116,13 +121,18 @@ export class SimApiOidcService {
   signOut(): void {
     if (this.config.oidc.sign_out_sync) {
       if (this.usePopup) {
-        this.manager.signoutPopup();
+        this.manager.signoutPopup().then(() => {
+          this.signState$.next(true);
+        });
       } else {
-        this.manager.signoutRedirect();
+        this.manager.signoutRedirect().then(() => {
+          this.signState$.next(true);
+        });
       }
     } else {
       this.manager.removeUser().then(() => {
         this.userLoaded$.next(false);
+        this.signState$.next(true);
       });
     }
   }
