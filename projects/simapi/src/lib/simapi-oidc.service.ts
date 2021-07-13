@@ -17,7 +17,7 @@ export class SimApiOidcService {
     scope: '',
     response_type: '',
     automaticSilentRenew: false,
-    popupWindowFeatures: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100',
+    popupWindowFeatures: 'location=no,toolbar=no,width=800,height=600,left=100,top=100',
     post_logout_redirect_uri: '',
     popup_post_logout_redirect_uri: ''
   };
@@ -84,37 +84,9 @@ export class SimApiOidcService {
   }
 
   signInCallback(): void {
-    this.route.queryParams.subscribe(q => {
-      if (q.access_token && q.use_exists_token === 'true') {
-        const u = new User({
-          profile: undefined,
-          scope: '',
-          id_token: '',
-          session_state: '',
-          access_token: q.access_token,
-          refresh_token: '',
-          token_type: q.token_type,
-          expires_at: Number(q.expires_at),
-          state: ''
-        });
-        this.manager.storeUser(u).then(_ => {
-          this.manager.getUser().then(user => {
-            this.currentUser = user;
-            this.userLoaded$.next(true);
-          });
-        });
-      } else {
-        const url = window.location.href.replace('/#/', '').replace('?', '#');
-        if (this.usePopup) {
-          this.manager.signinPopupCallback(url).then(() => {
-            this.signState$.next(true);
-          });
-        } else {
-          this.manager.signinRedirectCallback(url).then(() => {
-            this.signState$.next(true);
-          });
-        }
-      }
+    const url = window.location.href.replace('/#/', '').replace('?', '#');
+    this.manager.signinCallback(url).then(() => {
+      this.signState$.next(true);
     });
   }
 
@@ -134,15 +106,9 @@ export class SimApiOidcService {
   }
 
   signOutCallBack(): void {
-    if (this.usePopup) {
-      this.manager.signoutPopupCallback(false).then(() => {
-        this.signState$.next(false);
-      });
-    } else {
-      this.manager.signoutCallback().then(() => {
-        this.signState$.next(false);
-      });
-    }
+    this.manager.signinCallback().then(() => {
+      this.signState$.next(false);
+    });
   }
 
   get userAvailable(): boolean {
