@@ -134,17 +134,14 @@ export class SimApiOidcService {
   }
 
   signOutCallBack(): void {
-    const url = window.location.href.replace('/#/', '').replace('?', '#');
     if (this.usePopup) {
-      this.manager.signoutPopupCallback(url).then(() => {
+      this.manager.signoutPopupCallback(false).then(() => {
         this.signState$.next(false);
       });
-      ;
     } else {
-      this.manager.signoutCallback(url).then(() => {
+      this.manager.signoutCallback().then(() => {
         this.signState$.next(false);
       });
-      ;
     }
   }
 
