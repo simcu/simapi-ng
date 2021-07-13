@@ -71,11 +71,6 @@ export class SimApiOidcService {
         this.userLoaded$.next(false);
       });
     });
-    this.userLoaded$.subscribe(x => {
-      if (!x) {
-        this.manager.removeUser();
-      }
-    });
   }
 
   signIn(): void {
