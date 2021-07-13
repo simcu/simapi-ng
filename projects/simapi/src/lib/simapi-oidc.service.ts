@@ -109,6 +109,7 @@ export class SimApiOidcService {
     this.manager.signinCallback().then(() => {
       this.signState$.next(false);
     });
+    this.signState$.next(false);
   }
 
   get userAvailable(): boolean {
