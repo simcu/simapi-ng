@@ -56,6 +56,7 @@ export class SimApiService {
   // 发起数据请求
   public query(uri: string, params = {}, endpointKey = this.config.api.defaultEndpoint): Observable<any> {
     const queryId = this.genS4();
+    this.headers = {};
     if (!(params instanceof FormData)) {
       this.headers['Content-Type'] = 'application/json';
     }
