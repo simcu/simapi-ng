@@ -24,9 +24,6 @@ export class SimApiService {
 
   private endpoints: { [name: string]: string };
   private debugMode: boolean;
-  private headers: {
-    [name: string]: string;
-  } | undefined;
 
   // 业务错误代码预处理（处理完后依旧会传给后面）
   private businessCallback: Callback;
@@ -54,20 +51,19 @@ export class SimApiService {
   }
 
   // 发起数据请求
-  public query(uri: string, params = {}, endpointKey = this.config.api.defaultEndpoint): Observable<any> {
+  public query(uri: string, params = {}, endpointKey = this.config.api.defaultEndpoint, headers: any = {}): Observable<any> {
     const queryId = this.genS4();
-    this.headers = {};
     if (!(params instanceof FormData)) {
-      this.headers['Content-Type'] = 'application/json';
+      headers['Content-Type'] = 'application/json';
     }
     if (localStorage.getItem(this.config.auth.token_name)) {
-      this.headers.Token = localStorage.getItem(this.config.auth.token_name);
+      headers.Token = localStorage.getItem(this.config.auth.token_name);
     }
     if (this.oidc.userAvailable) {
-      this.headers.Authorization = `${this.oidc.user?.token_type} ${this.oidc.user?.access_token}`;
+      headers.Authorization = `${this.oidc.user?.token_type} ${this.oidc.user?.access_token}`;
     }
     if (this.isDebug) {
-      this.headers['Query-Id'] = queryId;
+      headers['Query-Id'] = queryId;
       console.log('[REQUEST*]', queryId, '->', uri, 'AUTH:',
         localStorage.getItem(this.config.auth.token_name) || this.oidc.userAvailable, params);
     }
@@ -75,7 +71,7 @@ export class SimApiService {
       this.endpoints[endpointKey] + uri,
       params,
       {
-        headers: new HttpHeaders(this.headers)
+        headers: new HttpHeaders(headers)
       });
     return new Observable<any>(obs => {
       resp.subscribe(data => {
