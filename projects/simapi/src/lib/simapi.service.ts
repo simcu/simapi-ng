@@ -8,7 +8,6 @@ type Callback = {
   [key in number | string]: (data: any) => void | any;
 };
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -43,6 +42,8 @@ export class SimApiService {
     }
   }
 
+  public headers: any = {};
+
   // 生成一个随机短字符串
   genS4(): string {
     // @ts-ignore
@@ -51,7 +52,10 @@ export class SimApiService {
   }
 
   // 发起数据请求
-  public query(uri: string, params = {}, endpointKey = this.config.api.defaultEndpoint, headers: any = {}): Observable<any> {
+  public query(uri: string, params = {}, endpointKey = this.config.api.defaultEndpoint, headers: any = null): Observable<any> {
+    if (headers === null) {
+      headers = this.headers;
+    }
     const queryId = this.genS4();
     if (!(params instanceof FormData)) {
       headers['Content-Type'] = 'application/json';
