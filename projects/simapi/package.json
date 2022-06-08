@@ -3,8 +3,8 @@
   "description": "A common api library for Angular (https://github.com/simapi)",
   "version": "0.0.0-version-placeholder",
   "peerDependencies": {
-    "@angular/common": "^11.2.14",
-    "@angular/core": "^11.2.14",
+    "@angular/common": "~13.2.5",
+    "@angular/core": "~13.2.5",
     "oidc-client": "^1.11.5"
   },
   "dependencies": {
