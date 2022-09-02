@@ -21,6 +21,11 @@ export class SimApiService {
     });
   }
 
+  // 判断是否DEBUG模式
+  get isDebug(): boolean {
+    return this.debugMode;
+  }
+
   private endpoints: { [name: string]: string };
   private debugMode: boolean;
 
@@ -30,10 +35,7 @@ export class SimApiService {
   // 网络请求处理
   private responseCallback: Callback;
 
-  // 判断是否DEBUG模式
-  get isDebug(): boolean {
-    return this.debugMode;
-  }
+  public headers: any = {};
 
   // 输出DEBUG信息（非DEBUG模式无输出）
   debug(title: string, data: any): void {
@@ -41,8 +43,6 @@ export class SimApiService {
       window.console.log('[DEBUG]', title, data);
     }
   }
-
-  public headers: any = {};
 
   // 生成一个随机短字符串
   genS4(): string {

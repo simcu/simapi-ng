@@ -24,7 +24,12 @@ export class SimApiConfigService {
     logout_url: '/auth/logout',
     login_url: '/auth/login'
   };
-  api = {
+  api: {
+    endpoints: { default: string },
+    defaultEndpoint: string,
+    businessCallback: { [key in number | string]: any }
+    responseCallback: { [key in number | string]: any }
+  } = {
     endpoints: {
       default: ''
     },
