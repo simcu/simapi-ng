@@ -27,8 +27,8 @@ export class SimApiConfigService {
   api: {
     endpoints: { default: string },
     defaultEndpoint: string,
-    businessCallback: { [key in number | string]: any }
-    responseCallback: { [key in number | string]: any }
+    businessCallback: { [key in number | string]: (data: any) => void }
+    responseCallback: { [key in number | string]: (data: any) => void }
   } = {
     endpoints: {
       default: ''
