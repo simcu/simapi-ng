@@ -51,7 +51,7 @@ export class SimApiService {
     return (((1 + Math.random()) * 0x10000 * Date.parse(new Date())) | 0).toString(16).substring(1);
   }
 
-  getEndpoint(name: string): string {
+  getEndpoint(name: string = this.config.api.defaultEndpoint): string {
     return this.endpoints[name];
   }
 
