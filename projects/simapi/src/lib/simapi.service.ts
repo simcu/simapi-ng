@@ -51,6 +51,10 @@ export class SimApiService {
     return (((1 + Math.random()) * 0x10000 * Date.parse(new Date())) | 0).toString(16).substring(1);
   }
 
+  getEndpoint(name: string): string {
+    return this.endpoints[name];
+  }
+
   // 发起数据请求
   public query(uri: string, params = {}, endpointKey = this.config.api.defaultEndpoint, headers: any = null): Observable<any> {
     if (headers === null) {
