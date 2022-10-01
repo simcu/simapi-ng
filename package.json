@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build SimApi --prod",
-    "publish": "ng build SimApi --prod && npm publish ./dist/simapi --access public",
+    "build": "ng build SimApi -c production",
+    "publish": "ng build SimApi -c production && npm publish ./dist/simapi --access public",
     "test": "ng test",
     "lint": "ng lint"
   },
