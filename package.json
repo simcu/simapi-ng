@@ -15,7 +15,11 @@
     "@angular/cli": "^18.0.4",
     "@types/jasmine": "^5.1.4",
     "@types/node": "^20.14.9",
-    "ng-packagr": "^18.0.0"
+    "jasmine-core": "^5.1.2",
+    "jasmine-spec-reporter": "^7.0.0",
+    "ng-packagr": "^18.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "@angular/common": "~18.0.4",
