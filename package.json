@@ -5,7 +5,11 @@
   "peerDependencies": {
     "@angular/common": "~18.0.4",
     "@angular/core": "~18.0.4",
+    "@angular/router": "^18.0.4",
     "oidc-client": "^1.11.5"
   },
-  "dependencies": {}
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^18.0.6",
+    "ng-packagr": "^18.0.0"
+  }
 }
