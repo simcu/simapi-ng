@@ -4,7 +4,7 @@
   "projects": {
     "SimApi": {
       "projectType": "library",
-      "root": "simapi",
+      "root": "./",
       "sourceRoot": "src",
       "prefix": "lib",
       "architect": {
