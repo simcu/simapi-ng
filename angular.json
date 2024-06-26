@@ -1,40 +1,39 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
   "projects": {
     "SimApi": {
       "projectType": "library",
-      "root": "projects/simapi",
-      "sourceRoot": "projects/simapi/src",
+      "root": "simapi",
+      "sourceRoot": "simapi/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/simapi/tsconfig.lib.json",
-            "project": "projects/simapi/ng-package.json"
+            "tsConfig": "simapi/tsconfig.lib.json",
+            "project": "simapi/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/simapi/tsconfig.lib.prod.json"
+              "tsConfig": "simapi/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/sim-api/src/test.ts",
-            "tsConfig": "projects/sim-api/tsconfig.spec.json",
-            "karmaConfig": "projects/sim-api/karma.conf.js"
+            "main": "sim-api/src/test.ts",
+            "tsConfig": "sim-api/tsconfig.spec.json",
+            "karmaConfig": "sim-api/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/sim-api/tsconfig.lib.json",
-              "projects/sim-api/tsconfig.spec.json"
+              "sim-api/tsconfig.lib.json",
+              "sim-api/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -73,25 +72,25 @@
           "skipTests": true
         }
       },
-      "root": "projects/examples",
-      "sourceRoot": "projects/examples/src",
+      "root": "examples",
+      "sourceRoot": "examples/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/examples",
-            "index": "projects/examples/src/index.html",
-            "main": "projects/examples/src/main.ts",
-            "polyfills": "projects/examples/src/polyfills.ts",
-            "tsConfig": "projects/examples/tsconfig.app.json",
+            "index": "examples/src/index.html",
+            "main": "examples/src/main.ts",
+            "polyfills": "examples/src/polyfills.ts",
+            "tsConfig": "examples/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/examples/src/favicon.ico",
-              "projects/examples/src/assets"
+              "examples/src/favicon.ico",
+              "examples/src/assets"
             ],
             "styles": [
-              "projects/examples/src/styles.css"
+              "examples/src/styles.css"
             ],
             "scripts": []
           },
@@ -99,8 +98,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/examples/src/environments/environment.ts",
-                  "with": "projects/examples/src/environments/environment.prod.ts"
+                  "replace": "examples/src/environments/environment.ts",
+                  "with": "examples/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
