@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.0.6",
+    "@angular/cli": "^18.0.4",
     "ng-packagr": "^18.0.0"
   }
 }
