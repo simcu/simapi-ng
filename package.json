@@ -1,0 +1,12 @@
+{
+  "name": "@simcu/simapi-ng",
+  "description": "A common api library for Angular (https://github.com/simapi)",
+  "version": "0.0.0-version-placeholder",
+  "peerDependencies": {
+    "@angular/common": "~17.3.4",
+    "@angular/core": "~17.3.4",
+    "oidc-client": "^1.11.5"
+  },
+  "dependencies": {
+  }
+}
