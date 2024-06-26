@@ -2,6 +2,14 @@
   "name": "@simcu/simapi-ng",
   "description": "A common api library for Angular (https://github.com/simapi)",
   "version": "0.0.0-version-placeholder",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build SimApi -c production",
+    "publish": "ng build SimApi -c production && npm publish ./dist/simapi --access public",
+    "test": "ng test",
+    "lint": "ng lint"
+  },
   "peerDependencies": {
     "@angular/common": "~18.0.4",
     "@angular/core": "~18.0.4",
