@@ -18,10 +18,11 @@
     "ng-packagr": "^18.0.0"
   },
   "dependencies": {
-    "tslib": "^2.6.3",
     "@angular/common": "~18.0.4",
     "@angular/core": "~18.0.4",
     "@angular/router": "^18.0.4",
-    "oidc-client": "^1.11.5"
+    "oidc-client": "^1.11.5",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.6.3"
   }
 }
