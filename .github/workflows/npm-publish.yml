@@ -17,7 +17,7 @@ jobs:
       - name: Publish
         run: |
           version=`git describe --tags`
-          sed -i "s/0.0.0-version-placeholder/$version/g" ./projects/sim-api/src/package.json
+          sed -i "s/0.0.0-version-placeholder/$version/g" ./projects/sim-api/package.json
           npm ci
           npm run publish
     env:
