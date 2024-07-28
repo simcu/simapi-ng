@@ -16,7 +16,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Publish
         run: |
-          npm i -g @angular/cli
+          npm i
           version=`git describe --tags`
           sed -i "s/0.0.0-version-placeholder/$version/g" ./projects/sim-api/package.json
           ng build SimApi -c production
