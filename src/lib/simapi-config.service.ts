@@ -6,18 +6,6 @@ import {ReplaySubject} from 'rxjs';
 })
 export class SimApiConfigService {
   debug = true;
-  oidc = {
-    server: '',
-    client_id: '',
-    scope: '',
-    response_type: 'token id_token',
-    sign_in_uri: '/oidc/sign-in',
-    sign_out_uri: '/oidc/sign-out',
-    sign_out_sync: false,
-    use_popup: false,
-    popup_setting: 'location=no,toolbar=no,width=1000,height=600,left=100,top=100',
-    full: null // 全量配置，使用oidc-client的配置方式，这种方式忽略其他参数
-  };
   auth = {
     token_name: 'simapi-auth-token',
     check_url: '/auth/check',

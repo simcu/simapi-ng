@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {SimApiOidcService} from './simapi-oidc.service';
 import {SimApiConfigService} from './simapi-config.service';
 
 type Callback = {
@@ -12,7 +11,7 @@ type Callback = {
   providedIn: 'root'
 })
 export class SimApiService {
-  constructor(private http: HttpClient, private oidc: SimApiOidcService, private config: SimApiConfigService) {
+  constructor(private http: HttpClient, private config: SimApiConfigService) {
     config.realTime$.subscribe(x => {
       this.endpoints = x.api.endpoints;
       this.debugMode = x.debug;
@@ -67,13 +66,10 @@ export class SimApiService {
     if (localStorage.getItem(this.config.auth.token_name)) {
       headers.Token = localStorage.getItem(this.config.auth.token_name);
     }
-    if (this.oidc.userAvailable) {
-      headers.Authorization = `${this.oidc.user?.token_type} ${this.oidc.user?.access_token}`;
-    }
     if (this.isDebug) {
       headers['Query-Id'] = queryId;
       console.log('[REQUEST*]', queryId, '->', uri, 'AUTH:',
-        localStorage.getItem(this.config.auth.token_name) || this.oidc.userAvailable, params);
+        localStorage.getItem(this.config.auth.token_name));
     }
     const resp = this.http.post(
       this.endpoints[endpointKey] + uri,
@@ -82,26 +78,29 @@ export class SimApiService {
         headers: new HttpHeaders(headers)
       });
     return new Observable<any>(obs => {
-      resp.subscribe(data => {
-        if (this.isDebug) {
-          console.log('[RESPONSE]', queryId, '->', data);
+      resp.subscribe({
+        next: data => {
+          if (this.isDebug) {
+            console.log('[RESPONSE]', queryId, '->', data);
+          }
+          const respData = this.responseCallback.success(data);
+          if (this.businessCallback.hasOwnProperty(respData.code)) {
+            this.businessCallback[respData.code](respData);
+          } else if (this.businessCallback.common && respData.code !== 200) {
+            this.businessCallback.common(respData);
+          }
+          if (respData.code === 200) {
+            obs.next(respData);
+          } else {
+            obs.error(respData);
+          }
+        },
+        error: err => {
+          if (this.isDebug) {
+            console.log('[RESPONSE]', queryId, '->', err);
+          }
+          this.responseCallback.error(err);
         }
-        const respData = this.responseCallback.success(data);
-        if (this.businessCallback.hasOwnProperty(respData.code)) {
-          this.businessCallback[respData.code](respData);
-        } else if (this.businessCallback.common && respData.code !== 200) {
-          this.businessCallback.common(respData);
-        }
-        if (respData.code === 200) {
-          obs.next(respData);
-        } else {
-          obs.error(respData);
-        }
-      }, err => {
-        if (this.isDebug) {
-          console.log('[RESPONSE]', queryId, '->', err);
-        }
-        this.responseCallback.error(err);
       });
     });
   }

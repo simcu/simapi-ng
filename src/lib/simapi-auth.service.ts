@@ -13,12 +13,15 @@ export class SimApiAuthService {
   // 登录
   public login(request: {}): Observable<any> {
     return new Observable<any>(obs => {
-      this.simapi.query(this.config.auth.login_url, request).subscribe(x => {
-        if (x.data) {
-          this.setToken(x.data);
-        }
-        obs.next(x);
-      }, e => obs.error(e));
+      this.simapi.query(this.config.auth.login_url, request).subscribe({
+        next: x => {
+          if (x.data) {
+            this.setToken(x.data);
+          }
+          obs.next(x);
+        },
+        error: obs.error
+      });
     });
   }
 
@@ -32,7 +35,7 @@ export class SimApiAuthService {
     return new Observable<any>(obs => {
       localStorage.removeItem(this.config.auth.token_name);
       if (url !== null) {
-        this.simapi.query(url).subscribe(r => obs.next(r), e => obs.error(e));
+        this.simapi.query(url).subscribe(obs);
       } else {
         obs.next(true);
       }
