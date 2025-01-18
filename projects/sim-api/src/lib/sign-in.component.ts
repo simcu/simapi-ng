@@ -4,8 +4,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {SimApiAuthService} from "./simapi-auth.service";
 
 @Component({
-  selector: 'simapi-sign-in',
-  template: '<p>正在跳转,请稍等片刻~</p>',
+    selector: 'simapi-sign-in',
+    template: '<p>正在跳转,请稍等片刻~</p>',
+    standalone: false
 })
 export class SignInComponent implements OnInit {
 
