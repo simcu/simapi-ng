@@ -31,7 +31,7 @@ export class SimApiService {
   get versions() {
     return {
       AppVersion: AppVersion ?? '0.0.0',
-      SimApiVersion: SimApiVersion
+      SimApiVersion: typeof AppVersion !== 'undefined' ? AppVersion : '0.0.0'
     }
   }
 
