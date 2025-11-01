@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {SimApiConfigService} from './simapi-config.service';
 import {SimApiVersion} from "../version";
+import {SimApiModule} from "./simapi.module";
 
 type Callback = {
   [key in number | string]: (data: any) => void | any;
@@ -30,8 +31,8 @@ export class SimApiService {
 
   get versions() {
     return {
-      App: AppVersion ?? '0.0.0',
-      SimApi: typeof AppVersion !== 'undefined' ? AppVersion : '0.0.0'
+      App: typeof AppVersion !== 'undefined' ? AppVersion : '0.0.0',
+      SimApi: SimApiVersion
     }
   }
 
