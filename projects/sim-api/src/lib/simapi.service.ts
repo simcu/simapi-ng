@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {SimApiConfigService} from './simapi-config.service';
+import {SimApiVersion} from "../version";
 
 type Callback = {
   [key in number | string]: (data: any) => void | any;
 };
 
-declare const SimApiVersion: string;
 declare const AppVersion: string;
 
 @Injectable({
@@ -30,7 +30,7 @@ export class SimApiService {
 
   get versions() {
     return {
-      AppVersion: AppVersion,
+      AppVersion: AppVersion ?? '0.0.0',
       SimApiVersion: SimApiVersion
     }
   }
