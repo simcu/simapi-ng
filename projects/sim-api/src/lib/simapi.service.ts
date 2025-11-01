@@ -7,6 +7,9 @@ type Callback = {
   [key in number | string]: (data: any) => void | any;
 };
 
+declare const SimApiVersion: string;
+declare const AppVersion: string;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,6 +26,13 @@ export class SimApiService {
   // 判断是否DEBUG模式
   get isDebug(): boolean {
     return this.debugMode;
+  }
+
+  get versions() {
+    return {
+      AppVersion: AppVersion,
+      SimApiVersion: SimApiVersion
+    }
   }
 
   private endpoints: { [name: string]: string } = {};

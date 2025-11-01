@@ -19,7 +19,7 @@ jobs:
           npm i
           version=`git describe --tags`
           sed -i "s/0.0.0-version-placeholder/$version/g" ./projects/sim-api/package.json
-          npm run -- ng build SimApi -c production
+          npm run -- ng build SimApi -c production --define SimApiVersion=$version
           npm publish ./dist/sim-api --access public
     env:
       NODE_AUTH_TOKEN: ${{secrets.NPM_APIKEY}}
