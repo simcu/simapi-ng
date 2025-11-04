@@ -6,6 +6,7 @@ import {ReplaySubject} from 'rxjs';
 })
 export class SimApiConfigService {
   debug = true;
+  fullVersion = true;
   auth = {
     token_name: 'simapi-auth-token',
     check_url: '/auth/check',

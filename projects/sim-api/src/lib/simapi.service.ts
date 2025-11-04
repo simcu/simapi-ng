@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {SimApiConfigService} from './simapi-config.service';
 import {SimApiVersion} from "../version";
-import {SimApiModule} from "./simapi.module";
 
 type Callback = {
   [key in number | string]: (data: any) => void | any;
@@ -15,27 +14,14 @@ declare const AppVersion: string;
   providedIn: 'root'
 })
 export class SimApiService {
-  constructor(private http: HttpClient, private config: SimApiConfigService) {
-    config.realTime$.subscribe(x => {
-      this.endpoints = x.api.endpoints;
-      this.debugMode = x.debug;
-      this.businessCallback = x.api.businessCallback;
-      this.responseCallback = x.api.responseCallback;
-    });
-  }
-
-  // 判断是否DEBUG模式
-  get isDebug(): boolean {
-    return this.debugMode;
-  }
-
-  get versions() {
-    return {
-      App: typeof AppVersion !== 'undefined' ? AppVersion : '0.0.0',
-      SimApi: SimApiVersion
-    }
-  }
-
+  versions = new ReplaySubject<{
+    uiApp: string,
+    uiSimApi: string,
+    apiApp: string,
+    apiSimApi: string,
+    apiAppFull: string,
+    apiSimApiFull: string
+  }>();
   private endpoints: { [name: string]: string } = {};
   private debugMode: boolean = false;
 
@@ -46,6 +32,47 @@ export class SimApiService {
   private responseCallback: Callback = {};
 
   public headers: any = {};
+
+  constructor(private http: HttpClient, private config: SimApiConfigService) {
+    config.realTime$.subscribe(x => {
+      this.endpoints = x.api.endpoints;
+      this.debugMode = x.debug;
+      this.businessCallback = x.api.businessCallback;
+      this.responseCallback = x.api.responseCallback;
+      if (x.fullVersion) {
+        this.getVersions();
+      }
+    });
+    this.versions.next({
+      uiApp: typeof AppVersion !== 'undefined' ? AppVersion : '0.0.0',
+      uiSimApi: SimApiVersion,
+      apiApp: '0.0.0',
+      apiSimApi: '0.0.0',
+      apiAppFull: '0.0.0',
+      apiSimApiFull: '0.0.0'
+    })
+  }
+
+
+  // 判断是否DEBUG模式
+  get isDebug(): boolean {
+    return this.debugMode;
+  }
+
+  getVersions() {
+    this.query("/versions").subscribe(resp => {
+      this.versions.next({
+        uiApp: typeof AppVersion !== 'undefined' ? AppVersion : '0.0.0',
+        uiSimApi: SimApiVersion,
+        apiApp: resp.data.App.split("+")[0],
+        apiSimApi: resp.data.SimApi.split("+")[0],
+        apiAppFull: resp.data.App,
+        apiSimApiFull: resp.data.SimApi
+      })
+      console.log(`UI主应用版本: ${typeof AppVersion !== 'undefined' ? AppVersion : '0.0.0'}\nUISimApi版本: ${SimApiVersion}\nAPI主应用版本: ${resp.data.App}\nAPISimApi版本: ${resp.data.SimApi}`);
+    })
+  }
+
 
   // 输出DEBUG信息（非DEBUG模式无输出）
   debug(title: string, data: any): void {
