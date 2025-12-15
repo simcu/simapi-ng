@@ -21,7 +21,7 @@ jobs:
          "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://registry.npmjs.org/" \
          | jq -r '.value')
          echo "ID_TOKEN exists: $([ -n "$ID_TOKEN" ] && echo "Yes" || echo "No")"
-       env:
+        env:
          ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
       - uses: actions/checkout@v4
