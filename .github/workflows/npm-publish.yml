@@ -26,4 +26,4 @@ jobs:
           sed -i "s/0.0.0-version-placeholder/$version/g" ./projects/sim-api/package.json
           sed -i "s/0.0.0/$version/g" ./projects/sim-api/src/version.ts
           npm run -- ng build SimApi -c production
-          npm publish ./dist/sim-api --access public
+          npm publish ./dist/sim-api --provenance --access public
